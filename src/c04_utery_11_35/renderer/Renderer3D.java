@@ -1,6 +1,7 @@
 package c04_utery_11_35.renderer;
 
 import c04_utery_11_35.model.Element;
+import c04_utery_11_35.model.ElementType;
 import c04_utery_11_35.model.Vertex;
 import c04_utery_11_35.renderer.Shader;
 import transforms.*;
@@ -25,7 +26,52 @@ public class Renderer3D implements GPURenderer {
 
     @Override
     public void draw(List<Element> elements, List<Vertex> vb, List<Integer> ib) {
+        for (Element element : elements) {
+            final int start = element.getStart();
+            final int count = element.getCount();
+            if (element.getElementType() == ElementType.TRIANGLE) {
+                for (int i = start; i < count + start; i += 3) {
+                    final Integer i1 = ib.get(i);
+                    final Integer i2 = ib.get(i + 1);
+                    final Integer i3 = ib.get(i + 2);
+                    final Vertex v1 = vb.get(i1);
+                    final Vertex v2 = vb.get(i2);
+                    final Vertex v3 = vb.get(i3);
+                    prepareTriangle(v1, v2, v3);
+                }
+            } else if (element.getElementType() == ElementType.LINE) {
 
+            } else {
+                // point
+            }
+        }
+    }
+
+    private void prepareTriangle(Vertex a, Vertex b, Vertex c) {
+        // 1. transformace vrcholů
+        // TODO příští cvičení
+
+        // 2. ořezání
+        // rychlé ořezání zobrazovacím objemem
+        // vyhodí trojúhelníky, které jsou celé mimo zobrazovací objem
+        // TODO příští cvičení
+
+        //3. seřazení trojúhelníků podle souřadnice z
+        if (a.z < b.z) {
+            Vertex temp = a;
+            a = b;
+            b = temp;
+        }
+        if (b.z < c.z) {
+            Vertex temp = b;
+            b = c;
+            c = temp;
+        }
+        if (a.z < b.z) {
+            Vertex temp = a;
+            a = b;
+            b = temp;
+        }
     }
 
     private Vec3D transformToWindow(Vec3D v) {

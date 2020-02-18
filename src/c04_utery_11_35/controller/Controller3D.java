@@ -1,9 +1,14 @@
 package c04_utery_11_35.controller;
 
+import c04_utery_11_35.model.Element;
+import c04_utery_11_35.model.ElementType;
+import c04_utery_11_35.model.Vertex;
 import c04_utery_11_35.renderer.GPURenderer;
 import c04_utery_11_35.renderer.Renderer3D;
 import c04_utery_11_35.view.Raster;
 import transforms.Camera;
+import transforms.Mat4Identity;
+import transforms.Mat4Transl;
 import transforms.Vec3D;
 
 import javax.swing.*;
@@ -11,6 +16,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class Controller3D {
 
@@ -19,18 +25,45 @@ public class Controller3D {
 
     private int mx, my;
 
+    private List<Element> elements;
+    private List<Vertex> vb;
+    private List<Integer> ib;
+
     public Controller3D(Raster raster) {
         initObjects(raster);
         initListeners(raster);
     }
 
     private void display() {
+        renderer3D.clear();
+        renderer3D.setModel(new Mat4Identity());
+        renderer3D.setView(camera.getViewMatrix());
+//        renderer3D.draw();
 
+        renderer3D.setModel(new Mat4Transl(2, 0, 0));
+//        renderer3D.draw();
     }
 
     private void initObjects(Raster raster) {
         renderer3D = new Renderer3D(raster);
         resetCamera();
+
+        for (int i = 0; i < 6; i++) {
+            vb.add(new Vertex()); // TODO jsou prázdné (ale jsou tam, teď to stačí)
+        }
+
+        ib.add(0);
+        ib.add(1);
+        ib.add(2);
+        ib.add(1);
+        ib.add(2);
+        ib.add(3);
+        ib.add(4);
+        ib.add(5);
+
+        elements.add(new Element(ElementType.TRIANGLE, 6, 0));
+        elements.add(new Element(ElementType.LINE, 2, 6));
+//        elements.add(new Element(ElementType.LINE, 2, 0));
     }
 
     private void resetCamera() {

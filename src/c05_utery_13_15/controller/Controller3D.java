@@ -1,16 +1,23 @@
 package c05_utery_13_15.controller;
 
+import c05_utery_13_15.model.Element;
+import c05_utery_13_15.model.ElementType;
+import c05_utery_13_15.model.Vertex;
 import c05_utery_13_15.renderer.GPURenderer;
 import c05_utery_13_15.renderer.Renderer3D;
 import c05_utery_13_15.view.Raster;
 import transforms.Camera;
+import transforms.Mat4Identity;
+import transforms.Mat4Transl;
 import transforms.Vec3D;
 
 import javax.swing.*;
+import javax.swing.event.MenuKeyListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class Controller3D {
 
@@ -19,18 +26,48 @@ public class Controller3D {
 
     private int mx, my;
 
+    private List<Element> elements;
+    private List<Vertex> vb;
+    private List<Integer> ib;
+
     public Controller3D(Raster raster) {
         initObjects(raster);
         initListeners(raster);
     }
 
     private void display() {
+        renderer3D.clear();
 
+        renderer3D.setModel(new Mat4Identity());
+        renderer3D.setView(camera.getViewMatrix());
+//        renderer3D.setProjection();
+
+        renderer3D.draw(elements, vb, ib);
+
+        renderer3D.setModel(new Mat4Transl(5, 0, 0));
+//        renderer3D.draw();
     }
 
     private void initObjects(Raster raster) {
         renderer3D = new Renderer3D(raster);
         resetCamera();
+
+        // předpoklad naplněného vertex bufferu
+
+        ib.add(0);
+        ib.add(1);
+        ib.add(2);
+        ib.add(2);
+        ib.add(2);
+        ib.add(1);
+        ib.add(3);
+        ib.add(4);
+        ib.add(5);
+        ib.add(2);
+        ib.add(4);
+
+        elements.add(new Element(ElementType.TRIANGLE, 6, 0));
+        elements.add(new Element(ElementType.LINE, 2, 6));
     }
 
     private void resetCamera() {
